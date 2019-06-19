@@ -8,6 +8,7 @@
 
 #import "ViewController1.h"
 #import "LKProgressHUD.h"
+
 @interface ViewController1 ()
 @property(nonatomic,assign)int ib;
 @end
@@ -36,10 +37,7 @@
     blueV.tag = 1002;
     [self.view addSubview:blueV];
     
-    
-
-   
-  
+ 
 }
 
 - (void)onRed{

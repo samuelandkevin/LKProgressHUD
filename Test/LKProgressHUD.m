@@ -15,13 +15,13 @@
 
 @implementation LKProgressHUD
 
-//显示加载中，文本为正在加载
+//显示加载中，文本为加载中...
 + (void)showloadingInView:(UIView *)view{
-     [self showloadingInView:view text:@"正在加载" delayDismiss:CGFLOAT_MAX];
+     [self showloadingInView:view text:@"加载中..." delayDismiss:CGFLOAT_MAX];
 }
-//显示加载中，文本为正在加载，指定时间消失
+//显示加载中，文本为加载中...，指定时间消失
 + (void)showloadingInView:(UIView *)view delayDismiss:(NSTimeInterval)delayDismiss{
-    [self showloadingInView:view text:@"正在加载" delayDismiss:delayDismiss];
+    [self showloadingInView:view text:@"加载中..." delayDismiss:delayDismiss];
 }
 
 
@@ -35,18 +35,15 @@
     XNProgressHUD *targetHud = XNHUD;
     targetHud.targetView = view;
     targetHud.position   = CGPointMake(view.bounds.size.width/2, view.bounds.size.height * 0.5);
-    /*选择方向
-     XNProgressHUDOrientationHorizontal = 0,
-     XNProgressHUDOrientationVertical
-     */
-//    targetHud.duration = 0;
+    //选择方向
     [targetHud setOrientation:XNProgressHUDOrientationHorizontal];
 
     //设置遮罩底色
-    [targetHud setMaskType:(XNProgressHUDMaskTypeCustom) hexColor:0x905a3d];
+    [targetHud setMaskType:(XNProgressHUDMaskTypeCustom) hexColor:0x000000];
     targetHud.maximumDelayDismissDuration = delayDismiss;
     //设置内边距
-    targetHud.padding = HUDPaddingMake(8, 8, 8, 8);
+    targetHud.padding = HUDPaddingMake(15, 15, 15, 24);
+    targetHud.separatorWidth = 15;
     [targetHud showLoadingWithTitle:text];
 }
 
@@ -63,11 +60,7 @@
     XNProgressHUD *targetHud = XNHUD;
     targetHud.targetView = view;
     targetHud.position   = CGPointMake(view.bounds.size.width/2, view.bounds.size.height * 0.5);
-    /*选择方向
-     XNProgressHUDOrientationHorizontal = 0,
-     XNProgressHUDOrientationVertical
-     */
-//    targetHud.duration = 0;
+    //选择方向
     [targetHud setOrientation:XNProgressHUDOrientationHorizontal];
     
     //设置遮罩底色
@@ -83,11 +76,7 @@
     XNProgressHUD *targetHud = XNHUD;
     targetHud.targetView = view;
     targetHud.position   = CGPointMake(view.bounds.size.width/2, view.bounds.size.height * 0.5);
-    /*选择方向
-     XNProgressHUDOrientationHorizontal = 0,
-     XNProgressHUDOrientationVertical
-     */
-//    targetHud.duration = 0;
+    //选择方向
     [targetHud setOrientation:XNProgressHUDOrientationHorizontal];
     
     //设置遮罩底色
@@ -102,6 +91,8 @@
     [XNHUD dismiss];
 }
 
-
+- (void)dealloc{
+    NSLog(@"LKProgressHUD dealloc");
+}
 
 @end

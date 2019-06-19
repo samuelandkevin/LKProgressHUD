@@ -10,6 +10,7 @@
 
 @interface XNProgressHUD() {
     UIView *_refreshView;
+    CGPoint _prePosition; //记录上一个位置;
 }
 @property (nonatomic, strong) NSTimer *displayTimer;
 @property (nonatomic, strong) NSTimer *dismissTimer;
@@ -128,7 +129,8 @@
 - (UIView *)refreshView {
     if(!_refreshView) {
         XNRefreshView *view = [XNRefreshView new];
-        view.tintColor = self.titleLabel.textColor;
+//        view.tintColor = self.titleLabel.textColor;
+        view.tintColor = [UIColor colorWithRed:28.0/255 green:130.0/255 blue:255.0/255 alpha:1];
         view.lineWidth = 2.f;
         _refreshView = view;
     }
@@ -177,8 +179,8 @@
 - (UILabel *)titleLabel {
     if(!_titleLabel) {
         _titleLabel = [UILabel new];
-        _titleLabel.textColor = [UIColor whiteColor];
-        _titleLabel.font = [UIFont fontWithName:@"PingFangSC-Medium" size:16.f];
+        _titleLabel.textColor = [UIColor colorWithRed:204.0/255 green:204.0/255 blue:204.0/255 alpha:1];
+        _titleLabel.font = [UIFont systemFontOfSize:15 weight:UIFontWeightRegular];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.numberOfLines = 0;
         _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -275,6 +277,7 @@
     _tintColor = [UIColor colorWithRed:0/255.f green:0/255.f blue:0/255.f alpha:0.9f];
     _shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1.f].CGColor;
     _position = [UIApplication sharedApplication].delegate.window.center;
+    _prePosition = _position;
     //shadeView、contentView
     [self.shadeContentView addSubview:self.contentView];
     [self.contentView addSubview:self.refreshView];
@@ -504,28 +507,44 @@
     [self addSubviewIfNotContain:self.shadeContentView superView:targetView];
     // 如果没有显示，需要先调整位置，防止视图跳动
     BOOL showing = self.showing;
-    if(!showing) {
+    if(!showing ) {
         self.maskView.alpha = 0.f;
         self.shadeContentView.alpha = 0.f;
         [self update];
+        
     }
     self.showing = YES;
     [self startRefreshAnimation];
     if ([self isWindowAndIsNotKeyWindow:(targetView)]) {
         targetView.hidden = NO;
+        
     }
-    HUDWeakSelf;
-    [UIView animateWithDuration:self.duration animations:^{
-        // 如果正在显示，通过动画过度Frame
+    
+    if (!CGPointEqualToPoint(_position, _prePosition)) {
+        // 不显示动画，防止跳动
         if(showing) {
-            [weakSelf update];
+            [self update];
         }else{
-            weakSelf.maskView.alpha = 1.f;
-            weakSelf.shadeContentView.alpha = 1.f;
+            self.maskView.alpha = 1.f;
+            self.shadeContentView.alpha = 1.f;
         }
-    } completion:^(BOOL finished) {
-        weakSelf.disposableDelayResponse = 0.f;
-    }];
+         self.disposableDelayResponse = 0.f;
+        _prePosition = _position;
+    }else{
+        HUDWeakSelf;
+        [UIView animateWithDuration:self.duration animations:^{
+            // 如果正在显示，通过动画过度Frame
+            if(showing) {
+                [weakSelf update];
+            }else{
+                weakSelf.maskView.alpha = 1.f;
+                weakSelf.shadeContentView.alpha = 1.f;
+            }
+        } completion:^(BOOL finished) {
+            weakSelf.disposableDelayResponse = 0.f;
+        }];
+    }
+    
     
    
     
